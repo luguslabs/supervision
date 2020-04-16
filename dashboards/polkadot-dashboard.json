@@ -476,6 +476,7 @@
         }
       }
     ],
+    "refresh": "5s",
     "schemaVersion": 22,
     "style": "dark",
     "tags": [],
@@ -501,7 +502,7 @@
       ]
     },
     "timezone": "",
-    "title": "Kusama  Polkadot",
+    "title": "Polkadot Dashboard",
     "variables": {
       "list": []
     },

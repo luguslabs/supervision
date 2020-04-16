@@ -15,6 +15,7 @@ RUN mkdir /app
 RUN mkdir /prometheus
 RUN mkdir /dashboards
 
+# Copy files
 COPY supervisord.conf /etc/supervisord/supervisord.conf
 COPY start-grafana.sh /app
 COPY start-prometheus.sh /app
