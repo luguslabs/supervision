@@ -260,7 +260,7 @@
         "pluginVersion": "6.7.2",
         "targets": [
           {
-            "expr": "polkadot_block_height_number",
+            "expr": "polkadot_block_height",
             "interval": "",
             "legendFormat": "{{status}}",
             "refId": "B"

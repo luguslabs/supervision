@@ -5,11 +5,18 @@ if [ -z "$GF_SECURITY_ADMIN_PASSWORD" ]; then
   exit 1
 fi
 
+if [ -z "$GF_SERVER_HTTP_PORT" ]; then
+  GF_SERVER_HTTP_PORT=3000
+fi
+
 echo 'Starting Grafana...'
 /run.sh "$@" &
 
+sleep 10
+
+
 echo "***************"
-ls dashboards
+ls /dashboards
 echo "***************"
 
 firstDashId="null"
@@ -21,13 +28,13 @@ AddDataSource() {
           \"url\":\"http://localhost:9090\",
           \"access\":\"proxy\",
           \"basicAuth\":false}" \
-   http://admin:$GF_SECURITY_ADMIN_PASSWORD@localhost:3000/api/datasources
+   http://admin:$GF_SECURITY_ADMIN_PASSWORD@localhost:$GF_SERVER_HTTP_PORT/api/datasources
 }
 
 AddDashboard() {
   curl -s -H "Content-Type: application/json" \
          -X POST -d "`cat $1`" \
-  http://admin:$GF_SECURITY_ADMIN_PASSWORD@localhost:3000/api/dashboards/db
+  http://admin:$GF_SECURITY_ADMIN_PASSWORD@localhost:$GF_SERVER_HTTP_PORT/api/dashboards/db
 }
 
 AddDashBoards(){
@@ -46,7 +53,7 @@ SetHomeDashboard() {
          -X PUT -d "{\"theme\": \"\",
                      \"homeDashboardId\":$1,
                      \"timezone\":\"utc\"}" \
-    http://admin:$GF_SECURITY_ADMIN_PASSWORD@localhost:3000/api/org/preferences
+    http://admin:$GF_SECURITY_ADMIN_PASSWORD@localhost:$GF_SERVER_HTTP_PORT/api/org/preferences
 }
 
 until AddDataSource; do

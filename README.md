@@ -20,9 +20,11 @@ docker run -d \
     -v grafana_data:/var/lib/grafana \
     -v prometheus_data:/prometheus \
     -e GF_SECURITY_ADMIN_PASSWORD=<ADMIN_PASSWORD> \
+    -e GF_SERVER_HTTP_PORT=3003 \
     -e PROMETHEUS_TARGET=<POLKADOT_PROMETHEUS_ENDPOINT> \
     luguslabs/supervision
 ```
+* `GF_SERVER_HTTP_PORT` - Grafana http listen port `Default: 3000`
 * `GF_SECURITY_ADMIN_PASSWORD` - password to access Grafana panel
 * `PROMETHEUS_TARGET` - Polkadot node Prometheus endpoint `Default: localhost:9615`
 * You can add `--network=container:<CONTAINER_ID>` to use networking of another container.
@@ -30,7 +32,7 @@ docker run -d \
 # Testing
 ## Launch polkadot node
 ```bash
-docker run -d -p 3000:3000 --name polkadot parity/polkadot
+docker run -d -p 3003:3003 --name polkadot parity/polkadot
 ```
 
 ## Launch supervisor
@@ -42,6 +44,7 @@ docker run -d \
     -v grafana_data:/var/lib/grafana \
     -v prometheus_data:/prometheus \
     -e GF_SECURITY_ADMIN_PASSWORD=admin1 \
+    -e GF_SERVER_HTTP_PORT=3003 \
     -e PROMETHEUS_TARGET=localhost:9615 \
     --network=container:polkadot \
     luguslabs/supervision
