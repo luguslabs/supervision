@@ -1,8 +1,8 @@
 #!/bin/bash
 
 if [ -z "$GF_SECURITY_ADMIN_PASSWORD" ]; then
-	echo "Please set GF_SECURITY_ADMIN_PASSWORD..."
-	exit 1
+  echo "Please set GF_SECURITY_ADMIN_PASSWORD..."
+  exit 1
 fi
 
 echo 'Starting Grafana...'
@@ -18,9 +18,9 @@ AddDataSource() {
   curl -H "Content-Type: application/json" \
    -X POST -d "{\"name\":\"Prometheus\", 
                 \"type\":\"prometheus\", 
-  				\"url\":\"http://localhost:9090\",
-  				\"access\":\"proxy\",
-  				\"basicAuth\":false}" \
+          \"url\":\"http://localhost:9090\",
+          \"access\":\"proxy\",
+          \"basicAuth\":false}" \
    http://admin:$GF_SECURITY_ADMIN_PASSWORD@localhost:3000/api/datasources
 }
 
@@ -31,14 +31,14 @@ AddDashboard() {
 }
 
 AddDashBoards(){
-        for filename in /dashboards/*.json; do
-        	addDash=$(AddDashboard "$filename")
-        	echo $addDash
-        	if [ "$firstDashId" == "null" ]; then
-        		firstDashId=$(echo $addDash | jq -r '.id')
-        		echo "First Dashboard ID is: $firstDashId"
-        	fi
-        done
+  for filename in /dashboards/*.json; do
+    addDash=$(AddDashboard "$filename")
+    echo $addDash
+    if [ "$firstDashId" == "null" ]; then
+      firstDashId=$(echo $addDash | jq -r '.id')
+      echo "First Dashboard ID is: $firstDashId"
+    fi
+  done
 }
 
 SetHomeDashboard() {
@@ -50,20 +50,21 @@ SetHomeDashboard() {
 }
 
 until AddDataSource; do
-	echo 'Configuring Data Sources in Grafana...'
-	sleep 1
-done
-
-until AddDashBoards; do
-	echo 'Configuring Dashboards in Grafana...'
-	sleep 1
-done
-
-until SetHomeDashboard "$firstDashId"; do
-  echo "Setting home dashboard to first added..."
+  echo 'Configuring Data Sources in Grafana...'
   sleep 1
 done
 
+until AddDashBoards; do
+  echo 'Configuring Dashboards in Grafana...'
+  sleep 1
+done
+
+if [ "$firstDashId" != "null" ]; then
+  until SetHomeDashboard "$firstDashId"; do
+    echo "Setting home dashboard to first added..."
+    sleep 1
+  done
+fi
 
 echo "Grafana has been configured"
 

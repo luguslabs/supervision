@@ -12,9 +12,13 @@ docker build -t luguslabs/supervision .
 
 # Run
 ```bash
+docker volume create grafana_data
+docker volume create prometheus_data
 docker run -d \
     -p 3000:3000  \
     --name supervision \
+    -v grafana_data:/var/lib/grafana \
+    -v prometheus_data:/prometheus \
     -e GF_SECURITY_ADMIN_PASSWORD=<ADMIN_PASSWORD> \
     -e PROMETHEUS_TARGET=<POLKADOT_PROMETHEUS_ENDPOINT> \
     luguslabs/supervision
@@ -31,8 +35,12 @@ docker run -d -p 3000:3000 --name polkadot parity/polkadot
 
 ## Launch supervisor
 ```bash
+docker volume create grafana_data
+docker volume create prometheus_data
 docker run -d \
     --name supervision \
+    -v grafana_data:/var/lib/grafana \
+    -v prometheus_data:/prometheus \
     -e GF_SECURITY_ADMIN_PASSWORD=admin1 \
     -e PROMETHEUS_TARGET=localhost:9615 \
     --network=container:polkadot \
